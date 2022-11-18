@@ -88,14 +88,18 @@ class TestHTTPClient:
     ) -> None:
         sms = SMSFactory()
         expected_data = {
-            "message-id": sms.id,
-            "recipient": sms.recipient,
-            "sms": {
-                "originator": sms.sender,
-                "content": {
-                    "text": sms.text,
+            "messages": [
+                {
+                    "message-id": sms.id,
+                    "recipient": sms.recipient,
+                    "sms": {
+                        "originator": sms.sender,
+                        "content": {
+                            "text": sms.text,
+                        },
+                    },
                 },
-            },
+            ],
         }
         httpx_mock.add_response(text="Request is received")
 
@@ -128,6 +132,10 @@ class TestHTTPClient:
 
         assert exc_info.value.http_status == expected_status
         assert exc_info.value.error == expected_error
+        assert str(exc_info.value) == (
+            "Playmobile responded with status 400.\n" +
+            "Error code: {0}. Error description: {1}."
+        ).format(expected_error.code, expected_error.description)
 
     def test_send_sms_not_found(
         self,
@@ -146,3 +154,4 @@ class TestHTTPClient:
 
         assert exc_info.value.http_status == expected_status
         assert exc_info.value.error is None
+        assert str(exc_info.value) == "Playmobile responded with status 504."

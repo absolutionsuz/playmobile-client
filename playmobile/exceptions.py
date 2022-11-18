@@ -15,13 +15,13 @@ class RequestError(PlaymobileBaseError):
         http_status: int,
         error: Optional[Error] = None,
     ) -> None:
-        message = "Playmobile responded with status {0}".format(http_status)
+        message = "Playmobile responded with status {0}.".format(http_status)
         if error:
             error_message = "Error code: {0}. Error description: {1}.".format(
                 error.code,
                 error.description,
             )
-            message = message + "\n" + error_message
+            message = "\n".join((message, error_message))
         super().__init__(message)
         self.http_status = http_status
         self.error = error

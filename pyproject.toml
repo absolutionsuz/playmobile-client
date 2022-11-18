@@ -40,7 +40,6 @@ python = "^3.7"
 attrs = "^22.0"
 httpx = "^0.23"
 marshmallow = "^3.18"
-yarl = "^1.8.1"
 
 [tool.poetry.group.test.dependencies]
 factory-boy = "^3.2"

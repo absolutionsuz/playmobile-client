@@ -4,7 +4,6 @@ from typing import Any, final
 import attrs
 import httpx
 from marshmallow import Schema, ValidationError, fields, post_load
-import yarl
 
 from playmobile.abstract import ClientInterface
 from playmobile.entities import SMS, Credentials, Error, ErrorCode
