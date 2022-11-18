@@ -1,0 +1,61 @@
+[tool.poetry]
+name = "playmobile-client"
+version = "0.1.0"
+description = "Python client for Playmobile.uz API"
+license = "BSD-3-Clause"
+authors = [
+    "Daniil Andreev <dandreevv22@gmail.com>"
+]
+readme = "README.md"
+repository = "https://github.com/absolutionsuz/playmobile-client"
+
+keywords = [
+    "playmobile",
+    "smsxabar",
+    "client",
+    "httpx",
+    "requests"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Internet :: WWW/HTTP"
+]
+
+packages = [
+    { include = "playmobile" }
+]
+exclude = [
+    "playmobile/test_utils.py"
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+attrs = "^22.0"
+httpx = "^0.23"
+marshmallow = "^3.18"
+yarl = "^1.8.1"
+
+[tool.poetry.group.test.dependencies]
+factory-boy = "^3.2"
+pytest = "^7.1"
+pytest-httpx = "^0.21"
+pytest-cov = "^3.0"
+pytest-randomly = "^3.12"
+pytest-deadfixtures = "^2.2"
+pytest-timeout = "^2.1"
+mypy = "^0.971"
+wemake-python-styleguide = "^0.17"
+flake8-pytest-style = "^1.6"
+import-linter = "^1.4"
+safety = "^2.3"
+
+[build-system]
+requires = ["poetry-core>=1.2.0"]
+build-backend = "poetry.core.masonry.api"
