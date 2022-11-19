@@ -10,8 +10,8 @@ from playmobile.client import HttpClient, _ErrorSchema  # noqa: WPS450
 from playmobile.entities import Credentials
 from playmobile.exceptions import RequestError, ResponsePayloadSchemaError
 from playmobile.test_utils import (
-    ErrorFactory,
-    SMSFactory,
+    generate_error,
+    generate_sms,
     generate_string,
     get_error_code,
 )
@@ -36,7 +36,7 @@ def assert_request(
 class TestErrorSchema:
 
     def test_with_valid_data(self) -> None:
-        expected_error = ErrorFactory()
+        expected_error = generate_error()
         data = {
             "error-code": expected_error.code,
             "error-description": expected_error.description,
@@ -86,7 +86,7 @@ class TestHTTPClient:
         account: Credentials,
         httpx_mock: HTTPXMock,
     ) -> None:
-        sms = SMSFactory()
+        sms = generate_sms()
         expected_data = {
             "messages": [
                 {
@@ -115,9 +115,9 @@ class TestHTTPClient:
         client: HttpClient,
         httpx_mock: HTTPXMock,
     ) -> None:
-        sms = SMSFactory()
+        sms = generate_sms()
         expected_status = HTTPStatus.BAD_REQUEST
-        expected_error = ErrorFactory()
+        expected_error = generate_error()
 
         httpx_mock.add_response(
             status_code=expected_status,
@@ -142,7 +142,7 @@ class TestHTTPClient:
         client: HttpClient,
         httpx_mock: HTTPXMock,
     ) -> None:
-        sms = SMSFactory()
+        sms = generate_sms()
         expected_status = HTTPStatus.GATEWAY_TIMEOUT
 
         httpx_mock.add_response(

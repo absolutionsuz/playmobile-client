@@ -2,8 +2,6 @@ import random
 import secrets
 import string
 
-import factory
-
 from playmobile.entities import SMS, Error, ErrorCode
 
 
@@ -26,23 +24,19 @@ def get_error_code() -> ErrorCode:
     return random.choice(tuple(ErrorCode))
 
 
-class SMSFactory(factory.Factory):
-    """SMS Factory."""
-
-    class Meta:
-        model = SMS
-
-    id = factory.LazyFunction(generate_string)
-    sender = factory.LazyFunction(generate_string)
-    recipient = factory.LazyFunction(generate_phone)
-    text = factory.LazyFunction(generate_string)
+def generate_sms() -> SMS:
+    """Generate random SMS entity."""
+    return SMS(
+        id=generate_string(),
+        sender=generate_string(),
+        recipient=generate_phone(),
+        text=generate_string(),
+    )
 
 
-class ErrorFactory(factory.Factory):
-    """Error Factory."""
-
-    class Meta:
-        model = Error
-
-    code = factory.LazyFunction(get_error_code)
-    description = factory.LazyFunction(generate_string)
+def generate_error() -> Error:
+    """Generate random Error entity."""
+    return Error(
+        code=get_error_code(),
+        description=generate_string(),
+    )

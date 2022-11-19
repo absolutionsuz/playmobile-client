@@ -49,4 +49,6 @@ client = playmobile.Client(
 )
 ```
 
-
+Package also have the test utils which will help you test your service:
+- playmobile.generate_sms
+- playmobile.generate_error
