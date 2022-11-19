@@ -12,7 +12,7 @@ To install playmobile-client, simply:
 ``` bash
 $ pip install playmobile-client
 ```
-This package can be found on [PyPI](https://pypi.org).
+This package can be found on [PyPI](https://pypi.org/project/playmobile-client/).
 
 ## Usage
 
