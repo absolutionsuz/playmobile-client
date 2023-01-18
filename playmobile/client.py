@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, final
+from typing import Any, Iterable, Optional, final
 
 import attrs
 import httpx
@@ -47,6 +47,15 @@ class HttpClient(ClientInterface):
 
     def send_sms(self, sms: SMS, *, timing: Optional[Timing] = None) -> None:
         """Send single SMS to Playmobile."""
+        self.send_sms_batch((sms,), timing=timing)
+
+    def send_sms_batch(
+        self,
+        sms_batch: Iterable[SMS],
+        *,
+        timing: Optional[Timing] = None,
+    ) -> None:
+        """Send batch of SMS to Playmobile."""
         payload: dict = {
             "messages": [
                 {
@@ -58,7 +67,7 @@ class HttpClient(ClientInterface):
                             "text": sms.text,
                         },
                     },
-                },
+                } for sms in sms_batch
             ],
         }
         if timing is not None:

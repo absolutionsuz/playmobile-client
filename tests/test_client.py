@@ -148,6 +148,37 @@ class TestHTTPClient:
         url = base_url.copy_with(path="/broker-api/send")
         assert_request(request, url=url, account=account, data=expected_data)
 
+    def test_send_sms_batch_success(
+        self,
+        client: HttpClient,
+        base_url: httpx.URL,
+        account: Credentials,
+        httpx_mock: HTTPXMock,
+    ) -> None:
+        sms_batch = [generate_sms() for _ in range(2)]
+        expected_data = {
+            "messages": [
+                {
+                    "message-id": sms.id,
+                    "recipient": sms.recipient,
+                    "sms": {
+                        "originator": sms.sender,
+                        "content": {
+                            "text": sms.text,
+                        },
+                    },
+                } for sms in sms_batch
+            ],
+        }
+        httpx_mock.add_response(text="Request is received")
+
+        client.send_sms_batch(sms_batch)
+        request = httpx_mock.get_request()
+        assert request is not None
+
+        url = base_url.copy_with(path="/broker-api/send")
+        assert_request(request, url=url, account=account, data=expected_data)
+
     def test_send_sms_bad_request(
         self,
         client: HttpClient,
