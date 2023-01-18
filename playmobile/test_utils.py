@@ -2,7 +2,11 @@ import random
 import secrets
 import string
 
-from playmobile.entities import SMS, Error, ErrorCode
+from faker import Faker
+
+from playmobile.entities import SMS, Error, ErrorCode, Timing
+
+FAKER = Faker()
 
 
 def generate_string() -> str:
@@ -31,6 +35,15 @@ def generate_sms() -> SMS:
         sender=generate_string(),
         recipient=generate_phone(),
         text=generate_string(),
+    )
+
+
+def generate_timing() -> Timing:
+    """Generate random SMS entity."""
+    end_at = FAKER.future_datetime()
+    return Timing(
+        start_at=FAKER.future_datetime(end_date=end_at),
+        end_at=end_at,
     )
 
 

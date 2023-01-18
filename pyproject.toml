@@ -37,6 +37,7 @@ python = "^3.7"
 attrs = "^22.0"
 httpx = "^0.23"
 marshmallow = "^3.18"
+faker = "^16.6.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.1"

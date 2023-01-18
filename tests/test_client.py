@@ -13,6 +13,7 @@ from playmobile.test_utils import (
     generate_error,
     generate_sms,
     generate_string,
+    generate_timing,
     get_error_code,
 )
 
@@ -104,6 +105,43 @@ class TestHTTPClient:
         httpx_mock.add_response(text="Request is received")
 
         client.send_sms(sms)
+        request = httpx_mock.get_request()
+        assert request is not None
+
+        url = base_url.copy_with(path="/broker-api/send")
+        assert_request(request, url=url, account=account, data=expected_data)
+
+    def test_send_sms_with_timing_success(
+        self,
+        client: HttpClient,
+        base_url: httpx.URL,
+        account: Credentials,
+        httpx_mock: HTTPXMock,
+    ) -> None:
+        sms = generate_sms()
+        timing = generate_timing()
+        expected_data = {
+            "timing": {
+                "start-datetime": timing.start_at.strftime("%Y-%m-%d %H:%M"),
+                "end-datetime": timing.end_at.strftime("%Y-%m-%d %H:%M"),
+                "send-evenly": int(timing.evenly),
+            },
+            "messages": [
+                {
+                    "message-id": sms.id,
+                    "recipient": sms.recipient,
+                    "sms": {
+                        "originator": sms.sender,
+                        "content": {
+                            "text": sms.text,
+                        },
+                    },
+                },
+            ],
+        }
+        httpx_mock.add_response(text="Request is received")
+
+        client.send_sms(sms, timing=timing)
         request = httpx_mock.get_request()
         assert request is not None
 

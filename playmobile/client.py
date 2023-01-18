@@ -1,12 +1,12 @@
 from http import HTTPStatus
-from typing import Any, final
+from typing import Any, Optional, final
 
 import attrs
 import httpx
 from marshmallow import Schema, ValidationError, fields, post_load
 
 from playmobile.abstract import ClientInterface
-from playmobile.entities import SMS, Credentials, Error, ErrorCode
+from playmobile.entities import SMS, Credentials, Error, ErrorCode, Timing
 from playmobile.exceptions import RequestError, ResponsePayloadSchemaError
 
 
@@ -45,9 +45,9 @@ class HttpClient(ClientInterface):
     _base_url: httpx.URL     # Base URL
     _session: httpx.Client  # HTTP Session
 
-    def send_sms(self, sms: SMS) -> None:
-        """Send SMS to Playmobile."""
-        payload = {
+    def send_sms(self, sms: SMS, *, timing: Optional[Timing] = None) -> None:
+        """Send single SMS to Playmobile."""
+        payload: dict = {
             "messages": [
                 {
                     "message-id": sms.id,
@@ -61,6 +61,17 @@ class HttpClient(ClientInterface):
                 },
             ],
         }
+        if timing is not None:
+            payload = {
+                **payload,
+                "timing": {
+                    "start-datetime": timing.start_at.strftime(
+                        "%Y-%m-%d %H:%M",
+                    ),
+                    "end-datetime": timing.end_at.strftime("%Y-%m-%d %H:%M"),
+                    "send-evenly": int(timing.evenly),
+                },
+            }
         self._fetch("/broker-api/send", payload)
 
     def _fetch(self, path: str, json: dict) -> None:

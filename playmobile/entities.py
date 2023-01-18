@@ -1,3 +1,4 @@
+from datetime import datetime
 from enum import IntEnum, unique
 
 import attrs
@@ -5,7 +6,7 @@ import attrs
 
 @attrs.frozen
 class Credentials:
-    """Credentials for Playmobile."""
+    """Учетные данные к Playmobile."""
 
     username: str
     password: str
@@ -13,7 +14,7 @@ class Credentials:
 
 @attrs.frozen
 class SMS:
-    """SMS payload."""
+    """Основные данные SMS."""
 
     id: str                       # Уникальный идентификтор сообщения
     sender: str                   # Номер отправителя
@@ -23,9 +24,27 @@ class SMS:
     text: str                     # Текст сообщения
 
 
+def _start_date_validator(instance: "Timing", _, start_date: datetime) -> None:
+    if datetime.now() > start_date:
+        raise ValueError("'start_at' can not be in past")
+    if start_date > instance.end_at:
+        raise ValueError("'start_at' can not be bigger than 'end_at'")
+
+
+@attrs.frozen
+class Timing:
+    """Настройка времени рассылки сообщений."""
+
+    start_at: datetime = attrs.field(  # Дата и время начала рассылки
+        validator=_start_date_validator,
+    )
+    end_at: datetime                  # Дата и время окончания рассылки
+    evenly: bool = False              # Равномерное раcпределение рассылки
+
+
 @unique
 class ErrorCode(IntEnum):
-    """Error codes from Playmobile."""
+    """Коды ошибок Playmobile."""
 
     INTERNAL_SERVER_ERROR = 100      # Внутренняя ошибка сервера
     SYNTAX_ERROR = 101               # Синтаксическая ошибка
@@ -60,7 +79,7 @@ class ErrorCode(IntEnum):
 
 @attrs.frozen
 class Error:
-    """Describe error response from Playmobile."""
+    """Тело ответа Playmobile при ошибке."""
 
     code: ErrorCode
     description: str
