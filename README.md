@@ -35,7 +35,42 @@ sms = playmobile.SMS(
     recipient="998xx3332211",
     text="Hello world!",
 )
+
+# Single SMS
 client.send_sms(sms)
+
+# SMS batch
+sms_batch = [
+    playmobile.SMS(
+        id="unique_string_1",
+        sender="0001",
+        recipient="998xx3332211",
+        text="Hello world!",
+    ),
+    playmobile.SMS(
+        id="unique_string_2",
+        sender="0001",
+        recipient="998xx3332211",
+        text="Yankee!",
+    ),
+]
+client.send_sms_batch(sms_batch)  
+```
+
+You can set up Timing settings:
+
+```python
+import playmobile
+
+sms = playmobile.SMS(...)
+
+timing = playmobile.Timing(
+    start_at=datetime(2023, 1, 1, 12, 0),
+    end_at=datetime(2023, 1, 1, 14, 0),
+)
+
+# Single SMS
+client.send_sms(sms, timing=timing)
 ```
 
 Advanced users can set up HTTPX session with custom parameters. For example:
